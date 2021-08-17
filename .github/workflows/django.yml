@@ -20,8 +20,8 @@ jobs:
         image: postgres:12
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: secret
-          POSTGRES_DB: djn054_dev
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
 
     steps:
     - uses: actions/checkout@v2
