@@ -16,7 +16,7 @@ jobs:
         python-version: [3.8]
 
     services:
-      db:
+      postgres:
         image: postgres:12
         env:
           POSTGRES_USER: postgres
