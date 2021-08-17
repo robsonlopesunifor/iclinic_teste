@@ -17,16 +17,11 @@ jobs:
 
     services:
       postgres:
-      image: postgres:12
-      env:
-        POSTGRES_PASSWORD: postgres
-      ports:
-        - 5432:5432
-      options: >-
-        --health-cmd pg_isready
-        --health-interval 10s
-        --health-timeout 5s
-        --health-retries 5
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
 
     steps:
     - uses: actions/checkout@v2
@@ -45,5 +40,5 @@ jobs:
         coverage run --source='.' --omit=manage.py,iclinic/wsgi.py manage.py test
         coverage report -m --fail-under=80
       env:
-        POSTGRES_HOST: postgres
-        POSTGRES_PORT: 5432
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
