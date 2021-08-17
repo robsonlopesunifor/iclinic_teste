@@ -1,6 +1,6 @@
-from .models import Prescriptions
 from django.core.exceptions import ValidationError
-from rest_framework.serializers import ModelSerializer, Field
+from rest_framework.serializers import ModelSerializer
+from prescriptions.models import Prescriptions
 
 
 class PrescriptionsSerializer(ModelSerializer):
@@ -12,8 +12,8 @@ class PrescriptionsSerializer(ModelSerializer):
 
     def add_metric(self, response_metric):
         serializer_data = self.data.copy()
-        serializer_data.update({"metric":{"id": int(response_metric['id'])}})
-        return {"data":serializer_data}
+        serializer_data.update({"metric": {"id": int(response_metric['id'])}})
+        return {"data": serializer_data}
 
     def validate_clinic(self, value):
         return self._validate(value)
@@ -37,6 +37,6 @@ class PrescriptionsSerializer(ModelSerializer):
 
     @staticmethod
     def _id_value_is_integer(value):
-        if "id" in value and type(value['id']) != int:
+        if "id" in value and not isinstance(value['id'], int):
             raise ValidationError('O valor do "id" tem que ser inteiro')
         return value
