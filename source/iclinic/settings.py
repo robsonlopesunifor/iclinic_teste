@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': config('POSTGRES_DB', cast=str),
         'USER': config('POSTGRES_USER', default='postgres', cast=str),
         'PASSWORD': config('POSTGRES_PASSWORD', cast=str),
-        'HOST': config('POSTGRES_HOST', cast=str),
+        'HOST': config('POSTGRES_HOST', default='127.0.0.1', cast=str),
         'PORT': config('POSTGRES_PORT', default=5432, cast=int),
     }
 }
