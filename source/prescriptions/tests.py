@@ -8,7 +8,6 @@ from django.test import TestCase
 from django.conf import settings
 from django.urls import reverse
 
-
 RESPONSE_METRIC = {
     "clinic_id":1,
     "clinic_name":"Kenneth Torp DDS",
@@ -19,7 +18,7 @@ RESPONSE_METRIC = {
     "patient_email":"Danial.Kassulke59@hotmail.com",
     "patient_phone":"413-218-5913 x9333",
     "prescription_id":26,
-    "id":"52",
+    "id":"1",
     "patient_name":"Boyd Crooks"
 }
 
@@ -51,47 +50,13 @@ class PrescriptionsCase(TestCase):
     def test_correct_request(self):
         # requisição correta 
 
-        response_with_clinic = {
-            'clinic_name': 'Kenneth Torp DDS',
-            'clinic_id': 1,
-            'physician_name': 'Wesley Marquardt',
-            'physician_crm': '0bc31b08-04f2-4eb8-b1b4-fd52f21622f4',
-            'physician_id': 1,
-            'patient_name': 'Boyd Crooks',
-            'patient_email': 'Danial.Kassulke59@hotmail.com',
-            'patient_phone': '413-218-5913 x9333',
-            'patient_id': 1
-        }
-
-        response_without_clinic = {
-            'clinic_id': 1,
-            'physician_name': 'Wesley Marquardt',
-            'physician_crm': '0bc31b08-04f2-4eb8-b1b4-fd52f21622f4',
-            'physician_id': 1,
-            'patient_name': 'Boyd Crooks',
-            'patient_email': 'Danial.Kassulke59@hotmail.com',
-            'patient_phone': '413-218-5913 x9333',
-            'patient_id': 1
-        }
-
-        response_without_clinic_metric = {
-            "clinic_id":1,
-            "clinic_name":"clinic_name 53",
-            "physician_id":1,
-            "physician_name":"Wesley Marquardt",
-            "physician_crm":"0bc31b08-04f2-4eb8-b1b4-fd52f21622f4",
-            "patient_id":1,
-            "patient_email":"Danial.Kassulke59@hotmail.com",
-            "patient_phone":"413-218-5913 x9333",
-            "prescription_id":9,
-            "id":"53",
-            "patient_name":"Boyd Crooks"
-        }
-
         with HTTMock(metrics_mock):
-            response = self.client.post(path=self.url, data=self.data, format='json')
+            response = self.client.post(
+                path=self.url,
+                data=json.dumps(self.data),
+                content_type='application/json')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), RESPONSE_METRIC)
+        self.assertEqual(response.json(), self.data_return)
 
 
     def test_malformed_request(self):
@@ -119,21 +84,30 @@ class PrescriptionsCase(TestCase):
         }
 
         # dados incompleto
-        response = self.client.post(path=self.url, data=incomplete_data, format='json')
+        response = self.client.post(
+            path=self.url,
+            data=json.dumps(incomplete_data),
+            content_type='application/json')
         self.assertEqual(response.status_code, 500)
         resposta = response.json()
         self.assertEqual(resposta['error']['code'], '01')
         self.assertEqual(resposta['error']['message'], 'malformed request')
 
         # nao tem id
-        response = self.client.post(path=self.url, data=data_not_id, format='json')
+        response = self.client.post(
+            path=self.url,
+            data=json.dumps(data_not_id),
+            content_type='application/json')
         self.assertEqual(response.status_code, 500)
         resposta = response.json()
         self.assertEqual(resposta['error']['code'], '01')
         self.assertEqual(resposta['error']['message'], 'malformed request')
 
         # id nao e inteiro
-        response = self.client.post(path=self.url, data=data_id_not_int, format='json')
+        response = self.client.post(
+            path=self.url,
+            data=json.dumps(data_id_not_int),
+            content_type='application/json')
         self.assertEqual(response.status_code, 500)
         resposta = response.json()
         self.assertEqual(resposta['error']['code'], '01')
@@ -142,12 +116,11 @@ class PrescriptionsCase(TestCase):
     def test_physician_not_found(self):
         # quando o medico não foi encontrado
         # erro 404 Not found
-        data_json = json.dumps(self.data)
         with HTTMock(physicians_404_mock):
             response = self.client.post(
                 path=self.url,
-                json=data_json,
-                headers={"Content-Type": "application/json"},)
+                data=json.dumps(self.data),
+                content_type='application/json')
         self.assertEqual(response.status_code, 500)
         #TODO: achar uma forma de não precisar converter
         #TODO: quando da erro e pra voutar no response.error ?
@@ -160,7 +133,10 @@ class PrescriptionsCase(TestCase):
         # quando o paciente não foi encontrado
         # erro 404 Not found
         with HTTMock(patients_404_mock):
-            response = self.client.post(path=self.url, data=self.data, format='json')
+            response = self.client.post(
+                path=self.url,
+                data=json.dumps(self.data),
+                content_type='application/json')
         self.assertEqual(response.status_code, 500)
         #TODO: achar uma forma de não precisar converter
         resposta_content = json.loads(response.content)
@@ -172,7 +148,10 @@ class PrescriptionsCase(TestCase):
         # quando nao e possivel acessar o servico de metrica
         # erro 
         with HTTMock(metrics_not_available_mock):
-            response = self.client.post(path=self.url, data=self.data, format='multipart')
+            response = self.client.post(
+                path=self.url,
+                data=json.dumps(self.data),
+                content_type='application/json')
         self.assertEqual(response.status_code, 500)
         resposta_content = json.loads(response.content)
         self.assertEqual(resposta_content['error']['code'], '04')
@@ -182,7 +161,10 @@ class PrescriptionsCase(TestCase):
         # quando nao e possivel acessar o servico de medico
         # erro 
         with HTTMock(physicians_not_available_mock):
-            response = self.client.post(path=self.url, data=self.data, format='json')
+            response = self.client.post(
+                path=self.url,
+                data=json.dumps(self.data),
+                content_type='application/json')
         self.assertEqual(response.status_code, 500)
         resposta_content = json.loads(response.content)
         self.assertEqual(resposta_content['error']['code'], '05')
@@ -192,7 +174,10 @@ class PrescriptionsCase(TestCase):
         # quando nao e possivel acessar o servico de paciente
         # erro 
         with HTTMock(patients_not_available_mock):
-            response = self.client.post(path=self.url, data=self.data, format='json')
+            response = self.client.post(
+                path=self.url,
+                data=json.dumps(self.data),
+                content_type='application/json')
         self.assertEqual(response.status_code, 500)
         resposta_content = json.loads(response.content)
         self.assertEqual(resposta_content['error']['code'], '06')

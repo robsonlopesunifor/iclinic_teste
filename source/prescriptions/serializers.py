@@ -2,23 +2,18 @@ from .models import Prescriptions
 from django.core.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, Field
 
-class JSONSerializerField(Field):
-    def to_internal_value(self, data):
-        print('to_internal_value', data)
-        return data
-    def to_representation(self, value):
-        print('to_representation', value)
-        return value
 
 class PrescriptionsSerializer(ModelSerializer):
-    #clinic = JSONSerializerField()
-    #physician = JSONSerializerField()
-    #patient = JSONSerializerField()
 
     class Meta:
         model = Prescriptions
         read_only_fields = ('id',)
         fields = ('id', 'clinic', 'physician', 'patient', 'text', )
+
+    def add_metric(self, response_metric):
+        serializer_data = self.data.copy()
+        serializer_data.update({"metric":{"id": int(response_metric['id'])}})
+        return {"data":serializer_data}
 
     def validate_clinic(self, value):
         return self._validate(value)

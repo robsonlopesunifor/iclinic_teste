@@ -19,19 +19,18 @@ class PrescriptionsCreateAPIView(generics.CreateAPIView):
 
     @transaction.atomic
     def create(self, request):
-        print('++++', request.data)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             data = serializer.data
-            print('mmm', data)
             request_data_metric = {}
             request_data_metric.update(self._consult_clinics_with_error_handling(data))
             request_data_metric.update(self._consult_physician_with_error_handling(data))
             request_data_metric.update(self._consult_patient_with_error_handling(data))
             request_data_metric_json = json.dumps(request_data_metric)
             response_metric = self._consult_metrics_with_error_handling(request_data_metric_json)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            data = serializer.add_metric(response_metric)
+            return Response(data, status=status.HTTP_200_OK)
         return Response({"error": {"message": "malformed request", "code": "01"}},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -42,7 +41,6 @@ class PrescriptionsCreateAPIView(generics.CreateAPIView):
             return {'clinic_id': id}
 
     def _consult_physician_with_error_handling(self, data):
-        print('data>>', data)
         try:
             return self._consult_physician(data['physician']['id'])
         except requests.HTTPError as exception:
