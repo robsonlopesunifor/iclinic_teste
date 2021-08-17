@@ -28,6 +28,8 @@ jobs:
     - name: Run Tests
       run: |
         ./load_envs.sh
+        apk update
+        apk add --no-cache build-base gcc libffi libffi-dev pcre-dev cairo cairo-dev linux-headers python3-dev postgresql-dev musl-dev jpeg-dev zlib-dev pango-dev gdk-pixbuf zlib git
         cd source
         coverage run --source='.' --omit=manage.py,iclinic/wsgi.py manage.py test
         coverage report -m --fail-under=80
