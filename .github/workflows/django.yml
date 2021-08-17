@@ -27,4 +27,7 @@ jobs:
         pip install pipenv && pipenv install --system
     - name: Run Tests
       run: |
-        python manage.py test
+        ./load_envs.sh
+        cd source
+        coverage run --source='.' --omit=manage.py,iclinic/wsgi.py manage.py test
+        coverage report -m --fail-under=80
