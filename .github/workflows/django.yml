@@ -16,7 +16,7 @@ jobs:
         python-version: [3.8]
 
     services:
-      postgres-iclinic:
+      postgres:
         image: postgres:12
         env:
           POSTGRES_USER: postgres
@@ -52,6 +52,3 @@ jobs:
         cd source
         coverage run --source='.' --omit=manage.py,iclinic/wsgi.py manage.py test
         coverage report -m --fail-under=80
-      env:
-        POSTGRES_HOST: postgres-iclinic
-        POSTGRES_PORT: 5432
