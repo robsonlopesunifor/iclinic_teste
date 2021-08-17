@@ -17,8 +17,8 @@ jobs:
 
     services:
       db:
-        image: postgres
-        environment:
+        image: postgres:12
+        env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: secret
           POSTGRES_DB: djn054_dev
