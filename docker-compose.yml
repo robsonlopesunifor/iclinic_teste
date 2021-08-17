@@ -5,7 +5,7 @@ networks:
 
 services:
 
-  db:
+  postgres:
     image: postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
@@ -29,10 +29,14 @@ services:
       - PHYSICIAN_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJzZXJ2aWNlIjoiY2xpbmljcyJ9.r3w8KS4LfkKqZhOUK8YnIdLhVGJEqnReSClLCMBIJRQ
       - PATIENTS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJzZXJ2aWNlIjoicGF0aWVudHMifQ.Pr6Z58GzNRtjX8Y09hEBzl7dluxsGiaxGlfzdaphzVU
       - METRICS_TOKEN=SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=postgres
     ports:
       - 8000:8000
     depends_on:
-      - db
+      - postgres
     networks:
       - banco
       - back
