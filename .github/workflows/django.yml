@@ -44,6 +44,7 @@ jobs:
         pip install pipenv && pipenv install --system
     - name: Run migrations
       run:  |
+        ./load_test_envs.sh
         cd source
         python manage.py migrate
     - name: Run Tests
