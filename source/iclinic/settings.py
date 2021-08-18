@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'iclinic.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('POSTGRES_DB', cast=str),
+        'NAME': config('POSTGRES_DB', default='postgres', cast=str),
         'USER': config('POSTGRES_USER', default='postgres', cast=str),
-        'PASSWORD': config('POSTGRES_PASSWORD', cast=str),
+        'PASSWORD': config('POSTGRES_PASSWORD', default='postgres', cast=str),
         'HOST': config('POSTGRES_HOST', default='127.0.0.1', cast=str),
         'PORT': config('POSTGRES_PORT', default=5432, cast=int),
     }
