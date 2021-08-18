@@ -49,7 +49,8 @@ jobs:
     - name: Run Tests
       run: |
         ./load_test_envs.sh
-        cd source
+        echo DEPENDENT_SERVICE
+        cd 
         coverage run --source='.' --omit=manage.py,iclinic/wsgi.py manage.py test
         coverage report -m --fail-under=80
     - name: Lint
