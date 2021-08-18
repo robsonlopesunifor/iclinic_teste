@@ -40,3 +40,4 @@ class PrescriptionsSerializer(ModelSerializer):
         if "id" in value and not isinstance(value['id'], int):
             raise ValidationError('O valor do "id" tem que ser inteiro')
         return value
+
