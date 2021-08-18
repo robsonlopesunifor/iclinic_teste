@@ -14,3 +14,8 @@ WORKDIR /source
 COPY Pipfile Pipfile.lock /source/
 RUN pip install pipenv && pipenv install --system
 COPY . /source/
+
+COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
