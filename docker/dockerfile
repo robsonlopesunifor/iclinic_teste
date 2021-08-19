@@ -16,6 +16,6 @@ RUN pip install pipenv && pipenv install --system
 COPY . /source/
 
 COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
