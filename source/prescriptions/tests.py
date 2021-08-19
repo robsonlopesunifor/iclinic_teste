@@ -190,17 +190,6 @@ class PrescriptionsCase(TestCase):
 
 
 DEPENDENT_SERVICE = urlparse(settings.DEPENDENT_SERVICE).netloc
-@urlmatch(netloc=DEPENDENT_SERVICE)
-def dependent_service_mock(url, request):
-    if url.path == '/physicians/' and request.method == 'GET':
-        return response(200, content="", headers={}, request=request)
-    if url.path == '/clinics/' and request.method == 'GET':
-        return response(200, content="", headers={}, request=request)
-    if url.path == '/patients/' and request.method == 'GET':
-        return response(200, content="", headers={}, request=request)
-    if url.path == '/metrics' and request.method == 'POST':
-        return response(200, content="", headers={}, request=request)
-    return response(404, content="", headers={}, request=request)
 
 @urlmatch(netloc=DEPENDENT_SERVICE, path=r'/v1/clinics/', method='GET')
 def clinics_404_mock(_, request):
