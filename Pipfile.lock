@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "04582f49de318fc644235de93c3eaa5a9d29cc584e11f3667f7511ab96d38497"
+            "sha256": "3fb9efbb7168bbe98e8e806a570ba6afee5b4c4bd51e4741cc63514ab59daed3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -118,13 +118,6 @@
             ],
             "index": "pypi",
             "version": "==3.12"
-        },
-        "faker": {
-            "hashes": [
-                "sha256:1fcb415562ee6e2395b041e85fa6901d4708d30b84d54015226fa754ed0822c3",
-                "sha256:e8beccb398ee9b8cc1a91d9295121d66512b6753b4846eb1e7370545d46b3311"
-            ],
-            "version": "==5.0.1"
         },
         "httmock": {
             "hashes": [
@@ -257,11 +250,11 @@
         },
         "pylint-django": {
             "hashes": [
-                "sha256:8dc2901d290b9b913eafc701659136b409cddb9b0f5310c219ecf15bd0a86e7b",
-                "sha256:9c324bf1734b0bae7693fa92ee6f486f35665a3519e5344bce0aa5f5743bd6f2"
+                "sha256:20e4d5f3987e96d29ce51ef24f13187f0d23f37a0558b6eed9b5571487ba3f4c",
+                "sha256:d47f278f2ef9244decc006a7412d0ea6bebe1594e6b5402703febbac036ba401"
             ],
             "index": "pypi",
-            "version": "==2.4"
+            "version": "==2.2"
         },
         "pylint-plugin-utils": {
             "hashes": [
@@ -269,13 +262,6 @@
                 "sha256:57625dcca20140f43731311cd8fd879318bf45a8b0fd17020717a8781714a25a"
             ],
             "version": "==0.6"
-        },
-        "python-dateutil": {
-            "hashes": [
-                "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86",
-                "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"
-            ],
-            "version": "==2.8.2"
         },
         "python-decouple": {
             "hashes": [
@@ -355,13 +341,6 @@
                 "sha256:0f91fd2e829c44362cbcfab3e9ae12e22badaa8a29ad5ff599f9ec109f0454e8"
             ],
             "version": "==0.4.1"
-        },
-        "text-unidecode": {
-            "hashes": [
-                "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8",
-                "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"
-            ],
-            "version": "==1.3"
         },
         "toml": {
             "hashes": [
