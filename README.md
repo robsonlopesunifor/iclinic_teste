@@ -16,6 +16,8 @@
 O Projeto possui docker e docker-compose, para ser instalado deve seguir o compose que se encontra na raiz do projeto
 Nele se encontra uma configuração do projeto em Django e um Banco de Dados em Postgres
 
+### OBS: So esta com .env no repositório para facilitar a instala.
+
 ```bash 
     docker-compose build
     docker-compose up
