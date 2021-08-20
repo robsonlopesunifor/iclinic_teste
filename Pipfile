@@ -15,6 +15,7 @@ pylint = "==2.9"
 pycodestyle = "==2.7"
 pylint-django = "==2.4"
 djangorestframework = "==3.12"
+requests-cache = "==0.7"
 
 [dev-packages]
 
