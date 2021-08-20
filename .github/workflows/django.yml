@@ -56,7 +56,7 @@ jobs:
     - name: Lint
       run: |
         pycodestyle --ignore=E302,E501 source
-        pylint --disable=C0116,C0115,C0114,R0801,E722,W0707,W0511,W0221,E5110 --ignore manage.py source
+        pylint --disable=C0116,C0115,C0114,R0801,E722,W0707,W0511,W0221,E5110,R0903 --ignore manage.py,migrations source
       env:
         DEPENDENT_SERVICE: https://5f71da6964a3720016e60ff8.mockapi.io/v1
         CLINICS_TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJzZXJ2aWNlIjoicGh5c2ljaWFucyJ9.Ei58MtFFGBK4uzpxwnzLxG0Ljdd-NQKVcOXIS4UYJtA
