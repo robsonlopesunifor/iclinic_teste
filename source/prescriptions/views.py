@@ -1,5 +1,7 @@
 import json
 import requests
+import requests_cache
+from requests.adapters import HTTPAdapter
 from django.db import transaction
 from django.conf import settings
 from rest_framework import generics
@@ -14,20 +16,6 @@ class PrescriptionsCreateAPIView(generics.CreateAPIView):
 
     serializer_class = PrescriptionsSerializer
     permission_classes = (permissions.AllowAny,)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.path_servece = {
-            'clinic': {
-                'path': 'clinics',
-                'token': settings.CLINICS_TOKEN},
-            'physician': {
-                'path': 'physicians',
-                'token': settings.PHYSICIAN_TOKEN},
-            'patient': {
-                'path': 'patients',
-                'token': settings.PATIENTS_TOKEN},
-        }
 
     @transaction.atomic
     def create(self, request):
@@ -58,16 +46,38 @@ class PrescriptionsCreateAPIView(generics.CreateAPIView):
         return response_metric
 
     def _consult_clinics_with_error_handling(self, data):
-        _id = data['clinic']['id']
         try:
-            return self._consult(_id, 'clinic')
+            _id = data['clinic']['id']
+            url = '{url}/clinics/{id}'.format(
+                url=settings.DEPENDENT_SERVICE,
+                id=_id)
+            response = self._consult(
+                url,
+                settings.CLINICS_TOKEN,
+                'get',
+                timeout=settings.CLINICS_TIMEOUT,
+                retry=settings.CLINICS_RETRY,
+                cache_hours=settings.CLINICS_CACHE,
+                cache_file='clinic')
+            return self._add_prefix(response, 'clinic')
         except requests.HTTPError:
             return {'clinic_id': _id}
 
     def _consult_physician_with_error_handling(self, data):
-        _id = data['physician']['id']
         try:
-            return self._consult(_id, 'physician')
+            _id = data['physician']['id']
+            url = '{url}/physicians/{id}'.format(
+                url=settings.DEPENDENT_SERVICE,
+                id=_id)
+            response = self._consult(
+                url,
+                settings.PHYSICIAN_TOKEN,
+                'get',
+                timeout=settings.PHYSICIAN_TIMEOUT,
+                retry=settings.PHYSICIAN_RETRY,
+                cache_hours=settings.PHYSICIAN_CACHE,
+                cache_file='physician')
+            return self._add_prefix(response, 'physician')
         except requests.HTTPError as exception:
             if exception.response.status_code == 404:
                 raise APIException(
@@ -79,9 +89,20 @@ class PrescriptionsCreateAPIView(generics.CreateAPIView):
                     "code": "05"}})
 
     def _consult_patient_with_error_handling(self, data):
-        _id = data['patient']['id']
         try:
-            return self._consult(_id, 'patient')
+            _id = data['patient']['id']
+            url = '{url}/patients/{id}'.format(
+                url=settings.DEPENDENT_SERVICE,
+                id=_id)
+            response = self._consult(
+                url,
+                settings.PATIENTS_TOKEN,
+                'get',
+                timeout=settings.PATIENTS_TIMEOUT,
+                retry=settings.PATIENTS_RETRY,
+                cache_hours=settings.PATIENTS_CACHE,
+                cache_file='patient')
+            return self._add_prefix(response, 'patient')
         except requests.HTTPError as exception:
             if exception.response.status_code == 404:
                 raise APIException({
@@ -93,46 +114,54 @@ class PrescriptionsCreateAPIView(generics.CreateAPIView):
                     "message": "patients service not available",
                     "code": "06"}})
 
-    def _consult_metrics_with_error_handling(self, data):
+    def _consult_metrics_with_error_handling(self, _data):
         try:
-            return self._consult_metrics(data)
+            url = '{url}/metrics'.format(url=settings.DEPENDENT_SERVICE)
+            response = self._consult(
+                url,
+                settings.METRICS_TOKEN,
+                'post',
+                data=_data,
+                timeout=settings.METRICS_TIMEOUT,
+                retry=settings.METRICS_RETRY,
+                cache_file='metric',
+                cache_hours=0)
+            return response
         except requests.HTTPError:
             raise APIException({
                 "error": {
                     'message': 'metrics service not available',
                     'code': '04'}})
 
-    def _consult(self, _id, _path):
-        url = '{url}/{path}/{id}'.format(
-            url=settings.DEPENDENT_SERVICE,
-            path=self.path_servece[_path]['path'],
-            id=_id)
+    def _consult(self, _url, _token, _method, **_config):
+        _data = _config.get('data', {})
+        _timeout = _config.get('timeout', 0)
+        _retry = _config.get('retry', 0)
+        _cache_file = './cache/{}'.format(
+            _config.get('cache_file', 'my_cache'))
+        _cache_secundes = self._hours_to_seconds(
+            _config.get('cache_hours', 0))
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer {}'.format(
-                self.path_servece[_path]['token'])
+            'Authorization': 'Bearer {}'.format(_token)
         }
-        response = requests.get(url, headers=headers)
+        adapter = HTTPAdapter(max_retries=_retry)
+        http = requests_cache.CachedSession(
+            _cache_file, expire_after=_cache_secundes)
+        http.mount("https://", adapter)
+        http.mount("http://", adapter)
+        response = http.request(
+            _method, _url, data=_data, headers=headers, timeout=_timeout)
         response.raise_for_status()
         response = response.json()
-        response = self._add_prefix(response, _path)
         return response
-
-    @staticmethod
-    def _consult_metrics(_data):
-        url_metrics = '{url}/{path}'.format(
-            url=settings.DEPENDENT_SERVICE,
-            path='metrics')
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer {}'.format(settings.METRICS_TOKEN)
-        }
-        response = requests.post(url_metrics, data=_data, headers=headers)
-        response.raise_for_status()
-        return response.json()
 
     @staticmethod
     def _add_prefix(_data, _prefix):
         _data['id'] = int(_data['id'])
         data_prefixo = {f'{_prefix}_{k}': v for k, v in _data.items()}
         return data_prefixo
+
+    @staticmethod
+    def _hours_to_seconds(_hours):
+        return _hours * 60 * 60

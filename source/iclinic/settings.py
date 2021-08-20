@@ -131,7 +131,22 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DEPENDENT_SERVICE = config('DEPENDENT_SERVICE', default='', cast=str)
+
 CLINICS_TOKEN = config('CLINICS_TOKEN', default='', cast=str)
+CLINICS_RETRY = config('CLINICS_RETRY', default=3, cast=int)
+CLINICS_TIMEOUT = config('CLINICS_TIMEOUT', default=5, cast=int)
+CLINICS_CACHE = config('CLINICS_CACHE', default=72, cast=int)
+
 PHYSICIAN_TOKEN = config('PHYSICIAN_TOKEN', default='', cast=str)
+PHYSICIAN_RETRY = config('PHYSICIAN_RETRY', default=2, cast=int)
+PHYSICIAN_TIMEOUT = config('PHYSICIAN_TIMEOUT', default=4, cast=int)
+PHYSICIAN_CACHE = config('PHYSICIAN_CACHE', default=48, cast=int)
+
 PATIENTS_TOKEN = config('PATIENTS_TOKEN', default='', cast=str)
+PATIENTS_RETRY = config('PATIENTS_RETRY', default=2, cast=int)
+PATIENTS_TIMEOUT = config('PATIENTS_TIMEOUT', default=3, cast=int)
+PATIENTS_CACHE = config('PATIENTS_CACHE', default=12, cast=int)
+
 METRICS_TOKEN = config('METRICS_TOKEN', default='', cast=str)
+METRICS_RETRY = config('METRICS_RETRY', default=5, cast=int)
+METRICS_TIMEOUT = config('METRICS_TIMEOUT', default=6, cast=int)

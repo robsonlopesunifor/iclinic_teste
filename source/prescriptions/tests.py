@@ -26,6 +26,9 @@ RESPONSE_METRIC = {
 class PrescriptionsCase(TestCase):
 
     def setUp(self):
+        settings.PHYSICIAN_CACHE = 0
+        settings.CLINICS_CACHE = 0
+        settings.PATIENTS_CACHE = 0
         self.url = reverse('prescriptions:prescriptions')
 
         self.data = {
@@ -48,7 +51,6 @@ class PrescriptionsCase(TestCase):
 
     def test_correct_request(self):
         # requisição correta
-
         with HTTMock(metrics_mock):
             response_data = self.client.post(
                 path=self.url,
