@@ -2,7 +2,7 @@ from django.urls import path
 from .views import PrescriptionsCreateAPIView
 
 
-app_name = 'prescriptions' # pylint: disable=C0103
+app_name = 'prescriptions'  # pylint: disable=C0103
 urlpatterns = [
     path(
         'prescriptions',

@@ -11,4 +11,4 @@ class Prescriptions(models.Model):
     text = models.CharField(max_length=80)
 
     def __str__(self):
-        return f"prescriptions {self.id}" # pylint: disable=E1101
+        return f"prescriptions {self.id}"  # pylint: disable=E1101
